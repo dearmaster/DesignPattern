@@ -22,7 +22,7 @@
 单例模式的代码实现方式有好几种，但万变不离其宗。
 这里主要介绍常见的2种单例模式：懒汉式单例模式，饿汉式单例模式，另外介绍线程安全的单例模式。
 
-**懒汉式单例模式**：instanceLazy的唯一获得方法就是getInstanceLazy()静态方法
+**懒汉式单例模式**：instanceLazy的唯一获得方法就是getInstanceLazy()静态方法，在第一次被使用时才会实例话，可以避免内存的浪费。
 
 ```
 package single_pattern;
@@ -55,7 +55,8 @@ public class Singleton{
 }
 ```
 
-其实上面的单例模式是线程不安全的，并发环境下容易出现多个实例。改进方式：
+像上面的单例模式创建方式在一个线程下是安全的，但是在多线程中是不安全的，并发环境下容易出现多个实例。改进方式：
+
 1：同步方法
 
 ```java
@@ -67,6 +68,10 @@ public class Singleton{
 	}
 
 ```
+优点：使用synchronize关键字给方法加锁，能够保证单例。
+
+缺点：加锁影响效率（多线程情况下，每次获取实例时都是同步的）。
+
 2:双重锁检测
 
 ```java
@@ -83,6 +88,10 @@ public class Singleton{
 		return instanceLazy;
 	}
 ```
+优点：资源利用率高, 不执行getInstanceLazy就不会被实例，可以执行该类其他静态方法。
+
+缺点：第一次加载时反应不快，由于java内存模型一些原因偶尔失败（Java内存模型了解不深入，不敢妄下结论，如果读者有兴趣爱好可以自己去查询资料）
+
 3：静态内部类
 
 ```java
@@ -114,9 +123,14 @@ public class Singleton3{
 }
 
 ```
->同步的方法，总会有一些性能的影响，但是个人认为，目前的目前的机器设备性能应该能容忍这点点性能的损耗。第三种方法当然比前面两种方法好，但是内部类的使用，可能需要多多锤炼。
+优点：资源利用率高, 不执行getInstance就不会被实例，可以执行该类其他静态方法。
 
-**饿汉式单例模式**：类初始化时就实例化
+缺点：第一次加载比较慢
+
+>同步加锁的方法，多线程下总会有一些性能的影响。若对资源十分在意可以采用静态内部类，不建议采用懒汉式及双重检测。
+
+
+**饿汉式单例模式**：类初始化时就实例化（预加载），相对懒汉式单例模式，更推荐使用饿汉式单例模式。
 
 ```java
 package single_pattern.hungry;
@@ -143,7 +157,8 @@ public class Singleton {
 
 }
 ```
->饿汉式在类创建的同时就已经创建好一个静态的对象供系统使用,线程安全
+优点：静态变量在类初始化时就已经存在静态块中了，所以天生线程安全，并且因为在已经有静态对象存在，所以调用时反应迅速。
+缺点：资源利用率不高，可能永远不会调用getSIngleton方法，但执行该类的其它静态方法或者加载了该类（Class.forName()），静态块仍然实例化。
 
 ## 总结
 
@@ -156,7 +171,8 @@ public class Singleton {
 2. http://blog.csdn.net/lilongsheng1125/article/details/7873515
 3. http://blog.csdn.net/tanyujing/article/details/14160941
 4. http://design-patterns.readthedocs.io/zh_CN/latest/creational_patterns/singleton.html#id3
+5. http://www.blogjava.net/wangchenyang/archive/2011/09/05/363081.html
 
->博主github地址：戳==>[chenzhijun](www.github.com/chenzhijun)
+>博主github地址：戳==>[chenzhijun](http://www.github.com/chenzhijun)
 >
 >博主博客地址：戳==>[chenzhijun.top](http://www.chenzhijun.top)
