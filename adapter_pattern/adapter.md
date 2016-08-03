@@ -10,3 +10,78 @@
 这个插头，但是厂家不理我，他的理由是这批货生产了好多，如果全都改掉成本太大，而且这个产品本来就是面向香港的。第二个方案也失败了。  
 经历了一系列的失败以后，我才恍然大悟，那个笨重的适配器存在的意义。在不改变双方的前提下，我依旧能使双方互相配合协作，那么我只能在两者之间再增加一层进行撮合，这就被成为适配器。  
 还是那句话，软件即生活的抽象，我们在项目开发过程中，通常会对系统进行扩展，就需要将原本两个不同的接口配合使用，但是由于这两个接口在各自的模块中早已被频繁使用，不容易修改，这也不符合开闭原则。于是就想到了在两个接口中加一层适配器，这样做既可以不改变双方接口，也可以是两个接口可以互相愉快的调用，一举两得的事情。  
+
+#####类图：
+![1.jpg](/adapter_pattern/1.jpg "")
+
+#####通用代码：
+
+1.首先定义一个target接口    
+```
+public interface Target {
+
+	public void request();
+}
+```
+
+2.target的实现类  
+```
+public class ConcreteTarget implements Target {
+
+	@Override
+	public void request() {
+
+		System.out.println("it is Target");
+	}
+}
+```
+
+3.定义被适配的类  
+```
+public class Adaptee {
+
+	public void doSomething(String str) {
+		System.out.println(str);
+	}
+}
+```
+
+4.适配器  
+```
+public class Adapter extends Adaptee implements Target {
+
+	@Override
+	public void request() {
+		doSomething("adapter call the adaptee");
+	}
+}
+```
+
+5.客户端代码  
+```
+public class Client {
+
+	public static void main(String[] args) {
+
+		Target t = new ConcreteTarget();
+		t.request();
+		
+		Target t2 = new Adapter();
+		t2.request();
+	}
+
+}
+```
+
+6.输出  
+```
+it is Target
+adapter call adaptee
+```
+
+
+
+
+
+
+
