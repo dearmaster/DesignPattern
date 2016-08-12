@@ -9,6 +9,11 @@
 
 #####样例代码
 ```
+/**
+ * 封装请求对象
+ * @author kexun
+ *
+ */
 public class ResidencePermitRequest {
 
 	public final static int LEVEL_WUYE = 1;
@@ -29,6 +34,11 @@ public class ResidencePermitRequest {
 	}
 }
 
+/**
+ * 封装返回对象
+ * @author kexun
+ *
+ */
 public class ResidencePermitResponse {
 
 	private String message;
@@ -185,7 +195,7 @@ public class Zhangsan {
 ```
 
 #####类图
-![1.jpg](responsibility_pattern/1.jpg "")  
+![1.jpg](./1.jpg "")  
 
 从类图中可以看出，每个请求都统一调用hander接口，从处理链中的头部开始依次开始处理，根据当前请求级别处理该请求，或者移交给下一个对象处理，形成一条责任链。
 
